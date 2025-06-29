@@ -1,0 +1,360 @@
+/* Eliminar estilos globales del header que ahora están en header.component.css */
+/* .logo-section, .logo, .header-title, .nav-menu, .nav-item, .user-profile */
+
+/* Elimina también los media queries que afectan a .header, .nav-menu, .nav-item, .user-profile */
+
+/* Responsive Design */
+/* Eliminados los estilos de header y navegación globales */
+
+.asistencia-container {
+  padding: 20px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.header {
+  margin-bottom: 30px;
+}
+
+.header h2 {
+  color: #2c3e50;
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.info-text {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.4;
+  margin-bottom: 0;
+}
+
+.link {
+  color: #e74c3c;
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.month-selector {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.month-selector label {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.select-field {
+  padding: 8px 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 14px;
+  background: white;
+  min-width: 150px;
+}
+
+.select-field:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.btn-outline {
+  background: white;
+  border: 2px solid #3498db;
+  color: #3498db;
+}
+
+.btn-outline:hover {
+  background: #3498db;
+  color: white;
+}
+
+.btn-danger {
+  background: #e74c3c;
+  border: 2px solid #e74c3c;
+  color: white;
+}
+
+.btn-danger:hover {
+  background: #c0392b;
+  border-color: #c0392b;
+}
+
+.table-container {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.attendance-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.attendance-table th,
+.attendance-table td {
+  border: 1px solid #e0e0e0;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.student-header {
+  background: #34495e;
+  color: white;
+  padding: 15px;
+  text-align: left;
+  font-weight: 600;
+  width: 200px;
+  position: sticky;
+  left: 0;
+  z-index: 10;
+}
+
+.day-header {
+  background: #34495e;
+  color: white;
+  padding: 8px 4px;
+  min-width: 35px;
+  font-weight: 500;
+}
+
+.day-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.day-name {
+  font-size: 10px;
+  opacity: 0.8;
+}
+
+.day-number {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.student-cell {
+  background: white;
+  padding: 12px;
+  text-align: left;
+  border-right: 2px solid #34495e;
+  position: sticky;
+  left: 0;
+  z-index: 5;
+  width: 200px;
+}
+
+.student-number {
+  display: inline-block;
+  width: 25px;
+  font-weight: 600;
+  color: #666;
+}
+
+.student-name {
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+.striped .student-cell {
+  background: #f8f9fa;
+}
+
+.attendance-cell {
+  padding: 4px;
+  width: 35px;
+  height: 45px;
+}
+
+.attendance-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  height: 100%;
+}
+
+.attendance-btn {
+  flex: 1;
+  border: 1px solid #ddd;
+  background: white;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  min-height: 18px;
+}
+
+.attendance-btn:hover {
+  transform: scale(1.05);
+}
+
+.attendance-btn.present {
+  color: #27ae60;
+  border-color: #27ae60;
+}
+
+.attendance-btn.present.active {
+  background: #27ae60;
+  color: white;
+}
+
+.attendance-btn.absent {
+  color: #e74c3c;
+  border-color: #e74c3c;
+}
+
+.attendance-btn.absent.active {
+  background: #e74c3c;
+  color: white;
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.legend {
+  margin-top: 20px;
+  padding: 15px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.legend-icon {
+  font-size: 16px;
+}
+
+.legend-help {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #f39c12;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.legend-label {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.legend-label.present {
+  background: #27ae60;
+  color: white;
+}
+
+.legend-label.absent {
+  background: #e74c3c;
+  color: white;
+}
+
+.legend-label.remote {
+  background: #f39c12;
+  color: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .controls {
+    flex-direction: column;
+    gap: 15px;
+    align-items: stretch;
+  }
+
+  .actions {
+    justify-content: center;
+  }
+
+  .attendance-table {
+    font-size: 10px;
+  }
+
+  .student-cell {
+    width: 150px;
+  }
+
+  .student-number {
+    width: 20px;
+  }
+}
+
+/* Scroll horizontal para la tabla */
+.table-container {
+  overflow-x: auto;
+}
+
+.attendance-table {
+  min-width: 800px;
+}

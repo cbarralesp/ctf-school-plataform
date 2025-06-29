@@ -1,0 +1,77 @@
+{
+  "months": [
+    {
+      "name": "Enero",
+      "days": 31,
+      "startDay": 1,
+      "holidays": [1]
+    },
+    {
+      "name": "Febrero",
+      "days": 28,
+      "startDay": 4,
+      "holidays": [],
+      "isLeapYear": false
+    },
+    {
+      "name": "Marzo",
+      "days": 31,
+      "startDay": 5,
+      "holidays": []
+    },
+    {
+      "name": "Abril",
+      "days": 30,
+      "startDay": 1,
+      "holidays": []
+    },
+    {
+      "name": "Mayo",
+      "days": 31,
+      "startDay": 3,
+      "holidays": [1, 21]
+    },
+    {
+      "name": "Junio",
+      "days": 30,
+      "startDay": 6,
+      "holidays": [29]
+    },
+    {
+      "name": "Julio",
+      "days": 31,
+      "startDay": 1,
+      "holidays": [16]
+    },
+    {
+      "name": "Agosto",
+      "days": 31,
+      "startDay": 4,
+      "holidays": [15]
+    },
+    {
+      "name": "Septiembre",
+      "days": 30,
+      "startDay": 0,
+      "holidays": [18, 19]
+    },
+    {
+      "name": "Octubre",
+      "days": 31,
+      "startDay": 2,
+      "holidays": [12]
+    },
+    {
+      "name": "Noviembre",
+      "days": 30,
+      "startDay": 5,
+      "holidays": [1]
+    },
+    {
+      "name": "Diciembre",
+      "days": 31,
+      "startDay": 0,
+      "holidays": [8, 25]
+    }
+  ]
+}

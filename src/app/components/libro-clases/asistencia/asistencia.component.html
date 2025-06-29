@@ -1,0 +1,90 @@
+<app-header></app-header>
+
+<div class="asistencia-container">
+  <div class="header">
+    <h2>Libro Clases: Asistencia Diaria</h2>
+    <p class="info-text">
+      La asistencia diaria solo contempla los estados de presente y ausente, estos son los únicos estados que recibe SIGE,
+      por esta razón y según la normativa vigente el estudiante Remoto es considerado Ausente.
+      <a href="#" class="link">Leer aquí</a>
+    </p>
+  </div>
+
+  <div class="controls">
+    <div class="month-selector">
+      <label for="month">Mes:</label>
+      <select id="month" [(ngModel)]="selectedMonth" (change)="onMonthChange()" class="select-field">
+        <option *ngFor="let month of months" [value]="month.value">
+          {{month.name}}
+        </option>
+      </select>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-outline" (click)="sincronizar()">
+        <span class="sync-icon">🔄</span> Sincronizar
+      </button>
+      <button class="btn btn-danger" (click)="marcarTodosPresentes()">
+        <span class="mark-icon">✓</span> Marcar ausentes
+      </button>
+    </div>
+  </div>
+
+  <div class="table-container" *ngIf="!cargando">
+    <table class="attendance-table">
+      <thead>
+        <tr>
+          <th class="student-header">N° Estudiante</th>
+          <th *ngFor="let dia of diasDelMes" class="day-header">
+            <div class="day-info">
+              <span class="day-name">{{getDayName(dia)}}</span>
+              <span class="day-number">{{dia}}</span>
+            </div>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let estudiante of estudiantes; let i = index"
+            [class.striped]="i % 2 === 0">
+          <td class="student-cell">
+            <span class="student-number">{{i + 1}}</span>
+            <span class="student-name">{{estudiante.nombre}}</span>
+          </td>
+          <td *ngFor="let dia of diasDelMes" class="attendance-cell">
+            <div class="attendance-buttons">
+              <button
+                class="attendance-btn present"
+                [class.active]="getEstadoAsistencia(estudiante.id, dia) === 'P'"
+                (click)="cambiarAsistencia(estudiante.id, dia, 'P')"
+                title="Presente">
+                P
+              </button>
+              <button
+                class="attendance-btn absent"
+                [class.active]="getEstadoAsistencia(estudiante.id, dia) === 'A'"
+                (click)="cambiarAsistencia(estudiante.id, dia, 'A')"
+                title="Ausente">
+                A
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="cargando" class="loading">
+    <div class="spinner"></div>
+    <p>Cargando asistencias...</p>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item">
+      <span class="legend-icon refresh">🔄</span>
+      <span class="legend-help">?</span>
+      <span class="legend-label present">Presente</span>
+      <span class="legend-label absent">Ausente</span>
+      <span class="legend-label remote">Remoto</span>
+    </div>
+  </div>
+</div>
