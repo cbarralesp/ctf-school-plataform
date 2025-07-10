@@ -1,0 +1,137 @@
+<app-header></app-header>
+<div class="container">
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+    <a [routerLink]="['/matricula/matricula-home']" class="breadcrumb-link">
+      <i class="fas fa-arrow-left"></i>
+      listado de matrículados
+    </a>
+  </div>
+
+  <h1 class="page-title">Matrícula de estudiantes</h1>
+
+  <!-- Mostrar errores -->
+  <div *ngIf="errores.length > 0" class="alert alert-danger">
+    <ul>
+      <li *ngFor="let error of errores">{{ error }}</li>
+    </ul>
+  </div>
+
+  <!-- Mostrar mensaje de éxito -->
+  <div *ngIf="mensajeExito" class="alert alert-success">
+    {{ mensajeExito }}
+  </div>
+
+  <!-- Mostrar spinner de carga -->
+  <div *ngIf="cargando" class="alert alert-info">
+    <i class="fas fa-spinner fa-spin"></i> Guardando datos...
+  </div>
+
+  <!-- Form Container -->
+  <div class="form-container">
+    <!-- Period Selection -->
+    <div class="form-section">
+      <h2 class="section-title">Período matrícula</h2>
+      <div class="form-row">
+        <div class="form-group full-width">
+          <select class="form-control" [(ngModel)]="periodoMatricula" (change)="onPeriodoChange()">
+            <option value="2023">Año 2023</option>
+            <option value="2024">Año 2024</option>
+            <option value="2025">Año 2025</option>
+          </select>
+          <i class="fas fa-chevron-down select-arrow"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="tab-navigation">
+      <a class="tab-button" [routerLink]="['/matricula/registro-estudiante']">Antecedentes Personales</a>
+      <a class="tab-button" [routerLink]="['/matricula/antecedentes-apoderado']">Antecedentes Apoderado</a>
+      <a class="tab-button active" [routerLink]="['/matricula/antecedentes-escolares']">Antecedentes Escolares</a>
+      <a class="tab-button" [routerLink]="['/matricula/antecedentes-salud']">Antecedentes de Salud</a>
+      <a class="tab-button" [routerLink]="['/matricula/antecedentes-familiares']">Antecedentes Familiares</a>
+    </div>
+
+    <!-- School Background Form -->
+    <div class="form-section">
+      <h3 class="form-subtitle">Antecedentes Escolares</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label required">Nivel de enseñanza *</label>
+          <select class="form-control" [(ngModel)]="antecedentesEscolares.nivelEnsenanza">
+            <option value="">Seleccione</option>
+            <option value="Prekinder">Prekinder</option>
+            <option value="Kinder">Kinder</option>
+            <option value="1ero Básico">1ero Básico</option>
+            <option value="2do Básico">2do Básico</option>
+            <option value="3ero Básico">3ero Básico</option>
+            <option value="4to Básico">4to Básico</option>
+            <option value="5to Básico">5to Básico</option>
+            <option value="6to Básico">6to Básico</option>
+          </select>
+          <i class="fas fa-chevron-down select-arrow"></i>
+        </div>
+        <div class="form-group">
+          <label class="form-label required">Curso {{ periodoMatricula }} *</label>
+          <select class="form-control" [(ngModel)]="antecedentesEscolares.curso2024">
+            <option value="">Seleccionar</option>
+            <option value="Prekinder">Prekinder</option>
+            <option value="Kinder">Kinder</option>
+            <option value="1ero Básico">1ero Básico</option>
+            <option value="2do Básico">2do Básico</option>
+            <option value="3ero Básico">3ero Básico</option>
+            <option value="4to Básico">4to Básico</option>
+            <option value="5to Básico">5to Básico</option>
+            <option value="6to Básico">6to Básico</option>
+          </select>
+          <i class="fas fa-chevron-down select-arrow"></i>
+        </div>
+        <div class="form-group">
+          <label class="form-label required">Fecha matrícula *</label>
+          <input type="date" class="form-control" [(ngModel)]="antecedentesEscolares.fechaMatricula">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">N° matrícula</label>
+          <input type="text" class="form-control" [(ngModel)]="antecedentesEscolares.numeroMatricula" placeholder="Ingrese número de matrícula">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Colegio procedencia</label>
+          <input type="text" class="form-control" [(ngModel)]="antecedentesEscolares.colegioProcedencia" placeholder="Ingrese colegio de procedencia">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Condición</label>
+          <select class="form-control" [(ngModel)]="antecedentesEscolares.condicion">
+            <option value="">Seleccionar</option>
+            <option value="Nuevo Ingreso">Nuevo Ingreso</option>
+            <option value="Necesidades Educativas Especiales (NEE)">Necesidades Educativas Especiales (NEE)</option>
+            <option value="Integración Escolar">Integración Escolar</option>
+            <option value="Talento Sobresaliente">Talento Sobresaliente</option>
+            <option value="Repitente">Repitente</option>
+            <option value="Enfermedad Crónica">Enfermedad Crónica</option>
+            <option value="Estudiante Regular">Estudiante Regular</option>
+            <option value="Traslado">Traslado</option>
+          </select>
+          <i class="fas fa-chevron-down select-arrow"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" (click)="cancelar()" [disabled]="cargando">
+        Cancelar
+      </button>
+      <button type="button" class="btn btn-primary" (click)="guardarYContinuar()" [disabled]="cargando">
+        <span *ngIf="cargando">
+          <i class="fas fa-spinner fa-spin"></i> Guardando...
+        </span>
+        <span *ngIf="!cargando">
+          Guardar y Continuar
+        </span>
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,176 @@
+<app-header></app-header>
+<div class="container">
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+    <a [routerLink]="['/matricula/matricula-home']" class="breadcrumb-link">
+      <i class="fas fa-arrow-left"></i>
+      listado de matrículados
+    </a>
+  </div>
+
+  <h1 class="page-title">Matrícula de estudiantes</h1>
+
+  <!-- Mostrar errores -->
+  <div *ngIf="errores.length > 0" class="alert alert-danger">
+    <ul>
+      <li *ngFor="let error of errores">{{ error }}</li>
+    </ul>
+  </div>
+
+  <!-- Mostrar mensaje de éxito -->
+  <div *ngIf="mensajeExito" class="alert alert-success">
+    {{ mensajeExito }}
+  </div>
+
+  <!-- Mostrar spinner de carga -->
+  <div *ngIf="cargando" class="alert alert-info">
+    <i class="fas fa-spinner fa-spin"></i> Guardando datos...
+  </div>
+
+  <!-- Form Container -->
+  <div class="form-container">
+    <!-- Period Selection -->
+    <div class="form-section">
+      <h2 class="section-title">Período matrícula</h2>
+      <div class="form-row">
+        <div class="form-group full-width">
+          <select class="form-control" [(ngModel)]="periodoMatricula" (change)="onPeriodoChange()">
+            <option value="2023">Año 2023</option>
+            <option value="2024">Año 2024</option>
+            <option value="2025">Año 2025</option>
+          </select>
+          <i class="fas fa-chevron-down select-arrow"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="tab-navigation">
+      <a class="tab-button" [routerLink]="['/matricula/registro-estudiante']">Antecedentes Personales</a>
+      <a class="tab-button" [routerLink]="['/matricula/antecedentes-apoderado']">Antecedentes Apoderado</a>
+      <a class="tab-button" [routerLink]="['/matricula/antecedentes-escolares']">Antecedentes Escolares</a>
+      <a class="tab-button active" [routerLink]="['/matricula/antecedentes-salud']">Antecedentes de Salud</a>
+      <a class="tab-button" [routerLink]="['/matricula/antecedentes-familiares']">Antecedentes Familiares</a>
+    </div>
+
+    <!-- Health Background Form -->
+    <div class="form-section">
+      <h3 class="form-subtitle">Antecedentes de Salud</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Estatura (cm)</label>
+          <input type="number" class="form-control" [(ngModel)]="antecedentesSalud.estatura" placeholder="Ej: 150">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Peso (kg)</label>
+          <input type="number" class="form-control" [(ngModel)]="antecedentesSalud.peso" placeholder="Ej: 45">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Grupo Sanguíneo</label>
+          <select class="form-control" [(ngModel)]="antecedentesSalud.grupoSanguineo">
+            <option value="">Seleccionar</option>
+            <option value="A+">A+</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B-">B-</option>
+            <option value="AB+">AB+</option>
+            <option value="AB-">AB-</option>
+            <option value="O+">O+</option>
+            <option value="O-">O-</option>
+          </select>
+          <i class="fas fa-chevron-down select-arrow"></i>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Alergias a alimentos</label>
+          <input type="text" class="form-control" [(ngModel)]="antecedentesSalud.alergiasAlimentos" placeholder="Especificar alergias alimentarias">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Alergias a medicamentos</label>
+          <input type="text" class="form-control" [(ngModel)]="antecedentesSalud.alergiasMedicamentos" placeholder="Especificar alergias medicamentosas">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Medicamentos contraindicados</label>
+          <input type="text" class="form-control" [(ngModel)]="antecedentesSalud.medicamentosContraindicados" placeholder="Especificar medicamentos contraindicados">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Enfermedades Crónicas</label>
+          <select class="form-control" [(ngModel)]="antecedentesSalud.enfermedadesCronicas">
+            <option value="">Seleccionar</option>
+            <option value="Ninguna">Ninguna</option>
+            <option value="Diabetes">Diabetes</option>
+            <option value="Asma">Asma</option>
+            <option value="Hipertensión">Hipertensión</option>
+            <option value="Epilepsia">Epilepsia</option>
+            <option value="Cardiopatía">Cardiopatía</option>
+            <option value="Otra">Otra</option>
+          </select>
+          <i class="fas fa-chevron-down select-arrow"></i>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">¿Es apto para Educación Física?</label>
+          <select class="form-control" [(ngModel)]="antecedentesSalud.aptoEducacionFisica">
+            <option value="">Seleccionar</option>
+            <option value="Sí">Sí</option>
+            <option value="No">No</option>
+            <option value="Con restricciones">Con restricciones</option>
+          </select>
+          <i class="fas fa-chevron-down select-arrow"></i>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Sistema previsión</label>
+          <select class="form-control" [(ngModel)]="antecedentesSalud.sistemaProvision">
+            <option value="">Seleccionar</option>
+            <option value="Fonasa">Fonasa</option>
+            <option value="Isapre">Isapre</option>
+            <option value="Capredena">Capredena</option>
+            <option value="Dipreca">Dipreca</option>
+            <option value="Otro">Otro</option>
+          </select>
+          <i class="fas fa-chevron-down select-arrow"></i>
+        </div>
+        <div class="form-group">
+          <label class="form-label">¿Posee seguro escolar privado?</label>
+          <select class="form-control" [(ngModel)]="antecedentesSalud.seguroEscolarPrivado">
+            <option value="">Seleccionar</option>
+            <option value="Sí">Sí</option>
+            <option value="No">No</option>
+          </select>
+          <i class="fas fa-chevron-down select-arrow"></i>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group full-width">
+          <label class="form-label">Consultorio o clínica donde se atiende</label>
+          <input type="text" class="form-control" [(ngModel)]="antecedentesSalud.consultorioClinica" placeholder="Nombre del centro de salud">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group full-width">
+          <label class="form-label">Observaciones</label>
+          <textarea class="form-control" [(ngModel)]="antecedentesSalud.observaciones" placeholder="Información adicional relevante sobre la salud del estudiante" rows="3"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" (click)="cancelar()" [disabled]="cargando">
+        Cancelar
+      </button>
+      <button type="button" class="btn btn-primary" (click)="guardarYContinuar()" [disabled]="cargando">
+        <span *ngIf="cargando">
+          <i class="fas fa-spinner fa-spin"></i> Guardando...
+        </span>
+        <span *ngIf="!cargando">
+          Guardar y Continuar
+        </span>
+      </button>
+    </div>
+  </div>
+</div>

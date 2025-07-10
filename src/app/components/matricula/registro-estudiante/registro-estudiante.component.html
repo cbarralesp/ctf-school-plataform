@@ -3,9 +3,9 @@
 <div class="container">
   <!-- Breadcrumb -->
   <div class="breadcrumb">
-    <a href="#" class="breadcrumb-link">
+    <a [routerLink]="['/matricula/matricula-home']" class="breadcrumb-link">
       <i class="fas fa-arrow-left"></i>
-      Matrículas
+      listado de matrículados
     </a>
   </div>
 
@@ -18,9 +18,13 @@
       <h2 class="section-title">Período matrícula</h2>
       <div class="form-row">
         <div class="form-group full-width">
-          <select class="form-control">
-            <option>Año 2023</option>
-            <option>Año 2024</option>
+          <select
+            class="form-control"
+            [(ngModel)]="estudiantePersonal.periodoMatricula"
+            (change)="onPeriodoChange()">
+            <option value="2023">Año 2023</option>
+            <option value="2024">Año 2024</option>
+            <option value="2025">Año 2025</option>
           </select>
           <i class="fas fa-chevron-down select-arrow"></i>
         </div>
@@ -29,10 +33,23 @@
 
     <!-- Tab Navigation -->
     <div class="tab-navigation">
-      <button class="tab-button active">Antecedentes Personales</button>
-      <button class="tab-button">Antecedentes Escolares</button>
-      <button class="tab-button">Antecedentes de Salud</button>
-      <button class="tab-button">Antecedentes Familiares</button>
+      <a class="tab-button active" [routerLink]="['/matricula/registro-estudiante']">Antecedentes Personales</a>
+      <a class="tab-button" [routerLink]="['/matricula/antecedentes-apoderado']">Antecedentes Apoderado</a>
+      <a class="tab-button" [routerLink]="['/matricula/antecedentes-escolares']">Antecedentes Escolares</a>
+      <a class="tab-button" [routerLink]="['/matricula/antecedentes-salud']">Antecedentes de Salud</a>
+      <a class="tab-button" [routerLink]="['/matricula/antecedentes-familiares']">Antecedentes Familiares</a>
+    </div>
+
+    <!-- Error Messages -->
+    <div *ngIf="errores.length > 0" class="alert alert-danger">
+      <ul>
+        <li *ngFor="let error of errores">{{ error }}</li>
+      </ul>
+    </div>
+
+    <!-- Success Message -->
+    <div *ngIf="mensajeExito" class="alert alert-success">
+      {{ mensajeExito }}
     </div>
 
     <!-- Personal Information Form -->
@@ -42,34 +59,56 @@
       <div class="form-row">
         <div class="form-group">
           <label class="form-label required">RUN * (Sin puntos ni guión)</label>
-          <input type="text" class="form-control" placeholder="">
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="estudiantePersonal.run"
+            placeholder="Ej: 12345678K"
+            maxlength="9"
+            (blur)="validarRun()">
         </div>
         <div class="form-group">
           <label class="form-label required">Apellido Paterno *</label>
-          <input type="text" class="form-control" placeholder="">
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="estudiantePersonal.apellidoPaterno"
+            placeholder="">
         </div>
         <div class="form-group">
           <label class="form-label">Apellido Materno</label>
-          <input type="text" class="form-control" placeholder="">
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="estudiantePersonal.apellidoMaterno"
+            placeholder="">
         </div>
       </div>
 
       <div class="form-row">
         <div class="form-group">
           <label class="form-label required">Nombres *</label>
-          <input type="text" class="form-control" placeholder="">
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="estudiantePersonal.nombres"
+            placeholder="">
         </div>
         <div class="form-group">
           <label class="form-label required">Fecha Nacimiento *</label>
-          <input type="date" class="form-control" placeholder="dd-mm-aaaa">
+          <input
+            type="date"
+            class="form-control"
+            [(ngModel)]="estudiantePersonal.fechaNacimiento"
+            placeholder="dd-mm-aaaa">
         </div>
         <div class="form-group">
           <label class="form-label">Género</label>
-          <select class="form-control">
-            <option>Seleccionar</option>
-            <option>Masculino</option>
-            <option>Femenino</option>
-            <option>Otro</option>
+          <select class="form-control" [(ngModel)]="estudiantePersonal.genero">
+            <option value="">Seleccionar</option>
+            <option value="Masculino">Masculino</option>
+            <option value="Femenino">Femenino</option>
+            <option value="Otro">Otro</option>
           </select>
           <i class="fas fa-chevron-down select-arrow"></i>
         </div>
@@ -78,32 +117,36 @@
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">Nacionalidad</label>
-          <select class="form-control">
-            <option>Seleccionar</option>
-            <option>Chilena</option>
-            <option>Argentina</option>
-            <option>Peruana</option>
-            <option>Boliviana</option>
-            <option>Colombiana</option>
-            <option>Venezolana</option>
-            <option>Otra</option>
+          <select class="form-control" [(ngModel)]="estudiantePersonal.nacionalidad">
+            <option value="">Seleccionar</option>
+            <option value="Chilena">Chilena</option>
+            <option value="Argentina">Argentina</option>
+            <option value="Peruana">Peruana</option>
+            <option value="Boliviana">Boliviana</option>
+            <option value="Colombiana">Colombiana</option>
+            <option value="Venezolana">Venezolana</option>
+            <option value="Otra">Otra</option>
           </select>
           <i class="fas fa-chevron-down select-arrow"></i>
         </div>
         <div class="form-group">
           <label class="form-label">Ciudad de Nacimiento</label>
-          <input type="text" class="form-control" placeholder="">
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="estudiantePersonal.ciudadNacimiento"
+            placeholder="">
         </div>
         <div class="form-group">
           <label class="form-label">Vive con</label>
-          <select class="form-control">
-            <option>Seleccionar</option>
-            <option>Ambos padres</option>
-            <option>Solo madre</option>
-            <option>Solo padre</option>
-            <option>Abuelos</option>
-            <option>Otros familiares</option>
-            <option>Otros</option>
+          <select class="form-control" [(ngModel)]="estudiantePersonal.viveCon">
+            <option value="">Seleccionar</option>
+            <option value="Ambos padres">Ambos padres</option>
+            <option value="Solo madre">Solo madre</option>
+            <option value="Solo padre">Solo padre</option>
+            <option value="Abuelos">Abuelos</option>
+            <option value="Otros familiares">Otros familiares</option>
+            <option value="Otros">Otros</option>
           </select>
           <i class="fas fa-chevron-down select-arrow"></i>
         </div>
@@ -112,37 +155,41 @@
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">Dirección</label>
-          <input type="text" class="form-control" placeholder="">
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="estudiantePersonal.direccion"
+            placeholder="">
         </div>
         <div class="form-group">
           <label class="form-label">Comuna</label>
-          <select class="form-control">
-            <option>Seleccionar</option>
-            <option>Santiago</option>
-            <option>Las Condes</option>
-            <option>Providencia</option>
-            <option>Ñuñoa</option>
-            <option>La Florida</option>
-            <option>Maipú</option>
-            <option>Puente Alto</option>
-            <option>Otras</option>
+          <select class="form-control" [(ngModel)]="estudiantePersonal.comuna">
+            <option value="">Seleccionar</option>
+            <option value="Santiago">Santiago</option>
+            <option value="Las Condes">Las Condes</option>
+            <option value="Providencia">Providencia</option>
+            <option value="Ñuñoa">Ñuñoa</option>
+            <option value="La Florida">La Florida</option>
+            <option value="Maipú">Maipú</option>
+            <option value="Puente Alto">Puente Alto</option>
+            <option value="Otras">Otras</option>
           </select>
           <i class="fas fa-chevron-down select-arrow"></i>
         </div>
         <div class="form-group">
           <label class="form-label">Etnia</label>
-          <select class="form-control">
-            <option>Seleccionar</option>
-            <option>No pertenece</option>
-            <option>Mapuche</option>
-            <option>Aymara</option>
-            <option>Diaguita</option>
-            <option>Atacameña</option>
-            <option>Quechua</option>
-            <option>Colla</option>
-            <option>Kawésqar</option>
-            <option>Yagán</option>
-            <option>Otra</option>
+          <select class="form-control" [(ngModel)]="estudiantePersonal.etnia">
+            <option value="">Seleccionar</option>
+            <option value="No pertenece">No pertenece</option>
+            <option value="Mapuche">Mapuche</option>
+            <option value="Aymara">Aymara</option>
+            <option value="Diaguita">Diaguita</option>
+            <option value="Atacameña">Atacameña</option>
+            <option value="Quechua">Quechua</option>
+            <option value="Colla">Colla</option>
+            <option value="Kawésqar">Kawésqar</option>
+            <option value="Yagán">Yagán</option>
+            <option value="Otra">Otra</option>
           </select>
           <i class="fas fa-chevron-down select-arrow"></i>
         </div>
@@ -151,120 +198,50 @@
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">Teléfono celular</label>
-          <input type="tel" class="form-control" placeholder="">
+          <input
+            type="tel"
+            class="form-control"
+            [(ngModel)]="estudiantePersonal.telefonoCelular"
+            placeholder="Ej: 987654321"
+            maxlength="9">
         </div>
         <div class="form-group">
           <label class="form-label">Teléfono fijo</label>
-          <input type="tel" class="form-control" placeholder="">
+          <input
+            type="tel"
+            class="form-control"
+            [(ngModel)]="estudiantePersonal.telefonoFijo"
+            placeholder="Ej: 223456789"
+            maxlength="9">
         </div>
         <div class="form-group">
           <label class="form-label">Email</label>
-          <input type="email" class="form-control" placeholder="">
-        </div>
-      </div>
-    </div>
-
-    <!-- Guardian Information Section -->
-    <div class="form-section">
-      <h3 class="form-subtitle">Datos de contacto del apoderado</h3>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label required">RUN Apoderado * (Sin puntos ni guión)</label>
-          <input type="text" class="form-control" placeholder="">
-        </div>
-        <div class="form-group">
-          <label class="form-label required">Apellido Paterno *</label>
-          <input type="text" class="form-control" placeholder="">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Apellido Materno</label>
-          <input type="text" class="form-control" placeholder="">
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label required">Nombres *</label>
-          <input type="text" class="form-control" placeholder="">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Relación con el estudiante</label>
-          <select class="form-control">
-            <option>Seleccionar</option>
-            <option>Padre</option>
-            <option>Madre</option>
-            <option>Abuelo/a</option>
-            <option>Tío/a</option>
-            <option>Hermano/a</option>
-            <option>Tutor legal</option>
-            <option>Otro</option>
-          </select>
-          <i class="fas fa-chevron-down select-arrow"></i>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Ocupación</label>
-          <input type="text" class="form-control" placeholder="">
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label required">Teléfono celular *</label>
-          <input type="tel" class="form-control" placeholder="">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Teléfono fijo</label>
-          <input type="tel" class="form-control" placeholder="">
-        </div>
-        <div class="form-group">
-          <label class="form-label required">Email *</label>
-          <input type="email" class="form-control" placeholder="">
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Dirección</label>
-          <input type="text" class="form-control" placeholder="">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Comuna</label>
-          <select class="form-control">
-            <option>Seleccionar</option>
-            <option>Santiago</option>
-            <option>Las Condes</option>
-            <option>Providencia</option>
-            <option>Ñuñoa</option>
-            <option>La Florida</option>
-            <option>Maipú</option>
-            <option>Puente Alto</option>
-            <option>Otras</option>
-          </select>
-          <i class="fas fa-chevron-down select-arrow"></i>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Nivel educacional</label>
-          <select class="form-control">
-            <option>Seleccionar</option>
-            <option>Educación básica incompleta</option>
-            <option>Educación básica completa</option>
-            <option>Educación media incompleta</option>
-            <option>Educación media completa</option>
-            <option>Educación técnica</option>
-            <option>Educación universitaria incompleta</option>
-            <option>Educación universitaria completa</option>
-            <option>Postgrado</option>
-          </select>
-          <i class="fas fa-chevron-down select-arrow"></i>
+          <input
+            type="email"
+            class="form-control"
+            [(ngModel)]="estudiantePersonal.email"
+            placeholder="ejemplo@email.com">
         </div>
       </div>
     </div>
 
     <!-- Action Buttons -->
     <div class="form-actions">
-      <button type="button" class="btn btn-secondary">Cancelar</button>
-      <button type="button" class="btn btn-primary">Guardar y Continuar</button>
+      <button
+        type="button"
+        class="btn btn-secondary"
+        (click)="cancelar()"
+        [disabled]="cargando">
+        Cancelar
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="guardarYContinuar()"
+        [disabled]="cargando">
+        <span *ngIf="cargando">Guardando...</span>
+        <span *ngIf="!cargando">Guardar y Continuar</span>
+      </button>
     </div>
   </div>
 </div>

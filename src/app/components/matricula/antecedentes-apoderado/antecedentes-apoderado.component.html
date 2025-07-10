@@ -1,0 +1,203 @@
+<app-header></app-header>
+<div class="container">
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+    <a [routerLink]="['/matricula/matricula-home']" class="breadcrumb-link">
+      <i class="fas fa-arrow-left"></i>
+      listado de matrículados
+    </a>
+  </div>
+  <h1 class="page-title">Matrícula de estudiantes</h1>
+
+  <!-- Form Container -->
+  <div class="form-container">
+    <!-- Period Selection -->
+    <div class="form-section">
+      <h2 class="section-title">Período matrícula</h2>
+      <div class="form-row">
+        <div class="form-group full-width">
+          <select class="form-control" [(ngModel)]="periodoMatricula" (change)="onPeriodoChange()">
+            <option value="2023">Año 2023</option>
+            <option value="2024">Año 2024</option>
+            <option value="2025">Año 2025</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="tab-navigation">
+      <a class="tab-button" [routerLink]="['/matricula/registro-estudiante']">Antecedentes Personales</a>
+      <a class="tab-button active" [routerLink]="['/matricula/antecedentes-apoderado']">Antecedentes Apoderado</a>
+      <a class="tab-button" [routerLink]="['/matricula/antecedentes-escolares']">Antecedentes Escolares</a>
+      <a class="tab-button" [routerLink]="['/matricula/antecedentes-salud']">Antecedentes de Salud</a>
+      <a class="tab-button" [routerLink]="['/matricula/antecedentes-familiares']">Antecedentes Familiares</a>
+    </div>
+
+    <!-- Error Messages -->
+    <div class="alert alert-danger" *ngIf="errores.length > 0">
+      <ul>
+        <li *ngFor="let error of errores">{{ error }}</li>
+      </ul>
+    </div>
+
+    <!-- Success Message -->
+    <div class="alert alert-success" *ngIf="mensajeExito">
+      {{ mensajeExito }}
+    </div>
+
+    <!-- Guardian Information Section -->
+    <div class="form-section">
+      <h3 class="form-subtitle">Datos de contacto del apoderado</h3>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label required">RUN Apoderado * (Sin puntos ni guión)</label>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Ej: 12345678K"
+            maxlength="9"
+            [(ngModel)]="apoderadoContacto.runApoderado"
+            (blur)="validarRun(apoderadoContacto.runApoderado)">
+        </div>
+        <div class="form-group">
+          <label class="form-label required">Apellido Paterno *</label>
+          <input
+            type="text"
+            class="form-control"
+            placeholder=""
+            [(ngModel)]="apoderadoContacto.apellidoPaterno">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Apellido Materno</label>
+          <input
+            type="text"
+            class="form-control"
+            placeholder=""
+            [(ngModel)]="apoderadoContacto.apellidoMaterno">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label required">Nombres *</label>
+          <input
+            type="text"
+            class="form-control"
+            placeholder=""
+            [(ngModel)]="apoderadoContacto.nombres">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Relación con el estudiante</label>
+          <select class="form-control" [(ngModel)]="apoderadoContacto.relacionEstudiante">
+            <option value="">Seleccionar</option>
+            <option value="Padre">Padre</option>
+            <option value="Madre">Madre</option>
+            <option value="Abuelo/a">Abuelo/a</option>
+            <option value="Tío/a">Tío/a</option>
+            <option value="Hermano/a">Hermano/a</option>
+            <option value="Tutor legal">Tutor legal</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ocupación</label>
+          <input
+            type="text"
+            class="form-control"
+            placeholder=""
+            [(ngModel)]="apoderadoContacto.ocupacion">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label required">Teléfono celular *</label>
+          <input
+            type="tel"
+            class="form-control"
+            placeholder="Ej: 987654321"
+            maxlength="9"
+            [(ngModel)]="apoderadoContacto.telefonoCelular">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Teléfono fijo</label>
+          <input
+            type="tel"
+            class="form-control"
+            placeholder="Ej: 223456789"
+            maxlength="9"
+            [(ngModel)]="apoderadoContacto.telefonoFijo">
+        </div>
+        <div class="form-group">
+          <label class="form-label required">Email *</label>
+          <input
+            type="email"
+            class="form-control"
+            placeholder="ejemplo@email.com"
+            [(ngModel)]="apoderadoContacto.email"
+            (blur)="validarEmail(apoderadoContacto.email)">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Dirección</label>
+          <input
+            type="text"
+            class="form-control"
+            placeholder=""
+            [(ngModel)]="apoderadoContacto.direccion">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Comuna</label>
+          <select class="form-control" [(ngModel)]="apoderadoContacto.comuna">
+            <option value="">Seleccionar</option>
+            <option value="Santiago">Santiago</option>
+            <option value="Las Condes">Las Condes</option>
+            <option value="Providencia">Providencia</option>
+            <option value="Ñuñoa">Ñuñoa</option>
+            <option value="La Florida">La Florida</option>
+            <option value="Maipú">Maipú</option>
+            <option value="Puente Alto">Puente Alto</option>
+            <option value="Otras">Otras</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nivel educacional</label>
+          <select class="form-control" [(ngModel)]="apoderadoContacto.nivelEducacional">
+            <option value="">Seleccionar</option>
+            <option value="Educación básica incompleta">Educación básica incompleta</option>
+            <option value="Educación básica completa">Educación básica completa</option>
+            <option value="Educación media incompleta">Educación media incompleta</option>
+            <option value="Educación media completa">Educación media completa</option>
+            <option value="Educación técnica">Educación técnica</option>
+            <option value="Educación universitaria incompleta">Educación universitaria incompleta</option>
+            <option value="Educación universitaria completa">Educación universitaria completa</option>
+            <option value="Postgrado">Postgrado</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="form-actions">
+      <button
+        type="button"
+        class="btn btn-secondary"
+        (click)="cancelar()"
+        [disabled]="cargando">
+        Cancelar
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="guardarYContinuar()"
+        [disabled]="cargando">
+        <span *ngIf="cargando">Guardando...</span>
+        <span *ngIf="!cargando">Guardar y Continuar</span>
+      </button>
+    </div>
+  </div>
+</div>
