@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { HeaderComponent } from '../../header/header.component';
-import { AsistenciaService, Estudiante, AsistenciaRequest } from '../../../services/asistencia.service';
+import { AsistenciaService, EstudianteConAsistencia, AsistenciaRequest } from '../../../services/asistencia.service';
 
 @Component({
   selector: 'app-asistencia',
@@ -16,6 +16,12 @@ export class AsistenciaComponent implements OnInit {
   selectedMonth: number = new Date().getMonth() + 1;
   selectedYear: number = 2026;
 
+  // Propiedades para el componente
+  estudiantes: EstudianteConAsistencia[] = [];
+  diasDelMes: number[] = [];
+  cargando: boolean = false;
+
+  // Configuración de meses
   months = [
     { value: 1, name: 'Enero' },
     { value: 2, name: 'Febrero' },
@@ -31,76 +37,81 @@ export class AsistenciaComponent implements OnInit {
     { value: 12, name: 'Diciembre' }
   ];
 
-  estudiantes: Estudiante[] = [];
-  diasDelMes: number[] = [];
-  cargando = false;
+  // Nombres de días en español
+  private diasSemana = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 
   constructor(private asistenciaService: AsistenciaService) {}
 
-  ngOnInit() {
-    this.generateDaysOfMonth();
-    this.loadEstudiantes();
+  ngOnInit(): void {
+    this.cargarDatosIniciales();
   }
 
-  onMonthChange() {
-    this.generateDaysOfMonth();
-    this.loadAsistencias();
+  /**
+   * Carga los datos iniciales del componente
+   */
+  private cargarDatosIniciales(): void {
+    this.generarDiasDelMes();
+    this.cargarEstudiantesConAsistencias();
   }
 
-  generateDaysOfMonth() {
-    const daysInMonth = new Date(this.selectedYear, this.selectedMonth, 0).getDate();
-    this.diasDelMes = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+  /**
+   * Genera los días del mes seleccionado
+   */
+  private generarDiasDelMes(): void {
+    const diasEnMes = new Date(this.selectedYear, this.selectedMonth, 0).getDate();
+    this.diasDelMes = Array.from({ length: diasEnMes }, (_, i) => i + 1);
   }
 
-  loadEstudiantes() {
+  /**
+   * Obtiene el nombre del día de la semana para una fecha específica
+   */
+  getDayName(dia: number): string {
+    const fecha = new Date(this.selectedYear, this.selectedMonth - 1, dia);
+    return this.diasSemana[fecha.getDay()];
+  }
+
+  /**
+   * Maneja el cambio de mes
+   */
+  onMonthChange(): void {
+    this.generarDiasDelMes();
+    this.cargarEstudiantesConAsistencias();
+  }
+
+  /**
+   * Carga los estudiantes con sus asistencias para el mes seleccionado
+   */
+  private cargarEstudiantesConAsistencias(): void {
     this.cargando = true;
-    this.asistenciaService.obtenerEstudiantes().subscribe({
-      next: (data) => {
-        this.estudiantes = data.map(est => ({
-          ...est,
-          asistencias: {}
-        }));
-        this.loadAsistencias();
-      },
-      error: (error) => {
-        console.error('Error cargando estudiantes:', error);
-        this.cargando = false;
-      }
-    });
+    this.asistenciaService.obtenerEstudiantesConAsistencias(this.selectedMonth, this.selectedYear)
+      .subscribe({
+        next: (estudiantes) => {
+          this.estudiantes = estudiantes;
+          this.cargando = false;
+        },
+        error: (error) => {
+          console.error('Error al cargar estudiantes con asistencias:', error);
+          this.cargando = false;
+          // Aquí podrías mostrar un mensaje de error al usuario
+        }
+      });
   }
 
-  loadAsistencias() {
-    if (this.estudiantes.length === 0) return;
-
-    this.cargando = true;
-    this.asistenciaService.obtenerAsistenciasPorMes(this.selectedMonth, this.selectedYear).subscribe({
-      next: (asistencias) => {
-        // Limpiar asistencias previas
-        this.estudiantes.forEach(est => est.asistencias = {});
-
-        // Mapear asistencias
-        asistencias.forEach(asist => {
-          const estudiante = this.estudiantes.find(est => est.id === asist.estudianteId);
-          if (estudiante) {
-            estudiante.asistencias[asist.fecha] = asist.estado;
-          }
-        });
-        this.cargando = false;
-      },
-      error: (error) => {
-        console.error('Error cargando asistencias:', error);
-        this.cargando = false;
-      }
-    });
-  }
-
+  /**
+   * Obtiene el estado de asistencia de un estudiante en un día específico
+   */
   getEstadoAsistencia(estudianteId: number, dia: number): string {
+    const estudiante = this.estudiantes.find(e => e.id === estudianteId);
+    if (!estudiante) return '';
+
     const fecha = this.asistenciaService.generarFecha(this.selectedYear, this.selectedMonth, dia);
-    const estudiante = this.estudiantes.find(est => est.id === estudianteId);
-    return estudiante?.asistencias[fecha] || '';
+    return estudiante.asistencias[fecha] || '';
   }
 
-  cambiarAsistencia(estudianteId: number, dia: number, estado: string) {
+  /**
+   * Cambia el estado de asistencia de un estudiante
+   */
+  cambiarAsistencia(estudianteId: number, dia: number, estado: string): void {
     const fecha = this.asistenciaService.generarFecha(this.selectedYear, this.selectedMonth, dia);
 
     const request: AsistenciaRequest = {
@@ -110,45 +121,89 @@ export class AsistenciaComponent implements OnInit {
     };
 
     this.asistenciaService.marcarAsistencia(request).subscribe({
-      next: () => {
-        const estudiante = this.estudiantes.find(est => est.id === estudianteId);
+      next: (response) => {
+        // Actualizar el estado local
+        const estudiante = this.estudiantes.find(e => e.id === estudianteId);
         if (estudiante) {
           estudiante.asistencias[fecha] = estado;
         }
+        console.log('Asistencia marcada:', response);
       },
       error: (error) => {
-        console.error('Error marcando asistencia:', error);
+        console.error('Error al marcar asistencia:', error);
+        // Aquí podrías mostrar un mensaje de error al usuario
       }
     });
   }
 
-  marcarTodosPresentes() {
-    this.cargando = true;
-    const fecha = this.asistenciaService.obtenerFechaHoy();
-    const requests = this.asistenciaService.generarRequestsPresentes(this.estudiantes, fecha);
+  /**
+   * Sincroniza con el backend de estudiantes
+   */
+  sincronizar(): void {
+    this.asistenciaService.verificarConectividadEstudiantes().subscribe({
+      next: (response) => {
+        console.log('Conectividad verificada:', response);
+        this.cargarEstudiantesConAsistencias();
+      },
+      error: (error) => {
+        console.error('Error de conectividad:', error);
+        // Aquí podrías mostrar un mensaje de error al usuario
+      }
+    });
+  }
+
+  /**
+   * Marca todos los estudiantes como ausentes para el día actual
+   */
+  marcarTodosPresentes(): void {
+    const fechaHoy = this.asistenciaService.obtenerFechaHoy();
+    const hoy = new Date();
+
+    // Verificar si la fecha actual está en el mes seleccionado
+    if (hoy.getMonth() + 1 !== this.selectedMonth || hoy.getFullYear() !== this.selectedYear) {
+      console.warn('No se puede marcar asistencia para un mes diferente al actual');
+      return;
+    }
+
+    // Crear requests para marcar todos como ausentes (según el botón dice "Marcar ausentes")
+    const requests: AsistenciaRequest[] = this.estudiantes.map(estudiante => ({
+      estudianteId: estudiante.id,
+      fecha: fechaHoy,
+      estado: 'A' // Ausente
+    }));
 
     this.asistenciaService.marcarAsistenciaMultiple(requests).subscribe({
-      next: () => {
-        this.loadAsistencias();
+      next: (response) => {
+        console.log('Asistencias múltiples marcadas:', response);
+        // Actualizar el estado local
+        this.estudiantes.forEach(estudiante => {
+          estudiante.asistencias[fechaHoy] = 'A';
+        });
       },
       error: (error) => {
-        console.error('Error marcando asistencias:', error);
-        this.cargando = false;
+        console.error('Error al marcar asistencias múltiples:', error);
+        // Aquí podrías mostrar un mensaje de error al usuario
       }
     });
   }
 
-  sincronizar() {
-    this.loadAsistencias();
-  }
-
-  getSelectedMonthName(): string {
-    return this.months.find(m => m.value === this.selectedMonth)?.name || '';
-  }
-
-  getDayName(dia: number): string {
+  /**
+   * Método de utilidad para verificar si una fecha es fin de semana
+   */
+  private esFinDeSemana(dia: number): boolean {
     const fecha = new Date(this.selectedYear, this.selectedMonth - 1, dia);
-    const dias = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-    return dias[fecha.getDay()];
+    const diaSemana = fecha.getDay();
+    return diaSemana === 0 || diaSemana === 6; // 0 = Domingo, 6 = Sábado
+  }
+
+  /**
+   * Método de utilidad para obtener la clase CSS del día
+   */
+  getDayClass(dia: number): string {
+    const clases = ['day-header'];
+    if (this.esFinDeSemana(dia)) {
+      clases.push('weekend');
+    }
+    return clases.join(' ');
   }
 }

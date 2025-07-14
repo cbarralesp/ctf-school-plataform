@@ -251,7 +251,7 @@ export class AntecedentesFamiliaresComponent implements OnInit {
 
       // Navegar a la lista de matrículas después de un breve delay
       setTimeout(() => {
-        this.router.navigate(['/matriculas']);
+        this.router.navigate(['/matricula-home']);
       }, 2000);
 
     } catch (error: any) {

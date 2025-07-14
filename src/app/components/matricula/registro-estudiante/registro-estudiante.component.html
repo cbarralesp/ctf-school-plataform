@@ -58,13 +58,14 @@
 
       <div class="form-row">
         <div class="form-group">
-          <label class="form-label required">RUN * (Sin puntos ni guión)</label>
+          <label class="form-label required">RUN * (Con puntos y guión)</label>
           <input
             type="text"
             class="form-control"
-            [(ngModel)]="estudiantePersonal.run"
-            placeholder="Ej: 12345678K"
-            maxlength="9"
+            [(ngModel)]="runFormateado"
+            placeholder="Ej: 12.345.678-K"
+            maxlength="12"
+            (input)="onRunInput($event)"
             (blur)="validarRun()">
         </div>
         <div class="form-group">
@@ -73,7 +74,8 @@
             type="text"
             class="form-control"
             [(ngModel)]="estudiantePersonal.apellidoPaterno"
-            placeholder="">
+            placeholder=""
+            (input)="onNombreInput($event, 'apellidoPaterno')">
         </div>
         <div class="form-group">
           <label class="form-label">Apellido Materno</label>
@@ -81,7 +83,8 @@
             type="text"
             class="form-control"
             [(ngModel)]="estudiantePersonal.apellidoMaterno"
-            placeholder="">
+            placeholder=""
+            (input)="onNombreInput($event, 'apellidoMaterno')">
         </div>
       </div>
 
@@ -92,7 +95,8 @@
             type="text"
             class="form-control"
             [(ngModel)]="estudiantePersonal.nombres"
-            placeholder="">
+            placeholder=""
+            (input)="onNombreInput($event, 'nombres')">
         </div>
         <div class="form-group">
           <label class="form-label required">Fecha Nacimiento *</label>
@@ -203,7 +207,8 @@
             class="form-control"
             [(ngModel)]="estudiantePersonal.telefonoCelular"
             placeholder="Ej: 987654321"
-            maxlength="9">
+            maxlength="9"
+            (input)="onTelefonoInput($event, 'telefonoCelular')">
         </div>
         <div class="form-group">
           <label class="form-label">Teléfono fijo</label>
@@ -212,7 +217,8 @@
             class="form-control"
             [(ngModel)]="estudiantePersonal.telefonoFijo"
             placeholder="Ej: 223456789"
-            maxlength="9">
+            maxlength="9"
+            (input)="onTelefonoInput($event, 'telefonoFijo')">
         </div>
         <div class="form-group">
           <label class="form-label">Email</label>

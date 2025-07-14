@@ -2,9 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-export interface Estudiante {
+export interface EstudianteConAsistencia {
   id: number;
   nombre: string;
+  run?: string;
+  curso?: string;
   asistencias: { [key: string]: string }; // fecha -> estado (P, A, R)
 }
 
@@ -29,10 +31,22 @@ export class AsistenciaService {
   constructor(private http: HttpClient) {}
 
   /**
-   * Obtiene todos los estudiantes
+   * Obtiene todos los estudiantes desde el backend de estudiantes
+   * (sin asistencias)
    */
-  obtenerEstudiantes(): Observable<Estudiante[]> {
-    return this.http.get<Estudiante[]>(`${this.apiUrl}/estudiantes`);
+  obtenerEstudiantes(): Observable<EstudianteConAsistencia[]> {
+    return this.http.get<EstudianteConAsistencia[]>(`${this.apiUrl}/estudiantes`);
+  }
+
+  /**
+   * Obtiene estudiantes con sus asistencias para un mes específico
+   */
+  obtenerEstudiantesConAsistencias(mes: number, año: number): Observable<EstudianteConAsistencia[]> {
+    const params = {
+      mes: mes.toString(),
+      año: año.toString()
+    };
+    return this.http.get<EstudianteConAsistencia[]>(`${this.apiUrl}/estudiantes-con-asistencias`, { params });
   }
 
   /**
@@ -49,15 +63,22 @@ export class AsistenciaService {
   /**
    * Marca la asistencia de un estudiante
    */
-  marcarAsistencia(request: AsistenciaRequest): Observable<any> {
-    return this.http.post(`${this.apiUrl}/marcar`, request);
+  marcarAsistencia(request: AsistenciaRequest): Observable<string> {
+    return this.http.post(`${this.apiUrl}/marcar`, request, { responseType: 'text' });
   }
 
   /**
    * Marca asistencia múltiple (varios estudiantes a la vez)
    */
-  marcarAsistenciaMultiple(requests: AsistenciaRequest[]): Observable<any> {
-    return this.http.post(`${this.apiUrl}/marcar-multiple`, requests);
+  marcarAsistenciaMultiple(requests: AsistenciaRequest[]): Observable<string> {
+    return this.http.post(`${this.apiUrl}/marcar-multiple`, requests, { responseType: 'text' });
+  }
+
+  /**
+   * Verifica la conectividad con el backend de estudiantes
+   */
+  verificarConectividadEstudiantes(): Observable<string> {
+    return this.http.get(`${this.apiUrl}/health/estudiantes`, { responseType: 'text' });
   }
 
   /**
@@ -82,7 +103,7 @@ export class AsistenciaService {
   /**
    * Genera los requests para marcar todos los estudiantes presentes en una fecha
    */
-  generarRequestsPresentes(estudiantes: Estudiante[], fecha: string): AsistenciaRequest[] {
+  generarRequestsPresentes(estudiantes: EstudianteConAsistencia[], fecha: string): AsistenciaRequest[] {
     return estudiantes.map(est => ({
       estudianteId: est.id,
       fecha,

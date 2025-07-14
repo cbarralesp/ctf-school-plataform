@@ -33,6 +33,7 @@ export class RegistroEstudianteComponent implements OnInit {
     periodoMatricula: '2025'
   };
 
+  runFormateado: string = '';
   errores: string[] = [];
   cargando = false;
   mensajeExito = '';
@@ -48,12 +49,50 @@ export class RegistroEstudianteComponent implements OnInit {
     const datosExistentes = this.estudianteService.getCurrentData();
     if (datosExistentes.personal) {
       this.estudiantePersonal = { ...datosExistentes.personal };
+      // Formatear el RUN si existe
+      if (this.estudiantePersonal.run) {
+        this.runFormateado = this.formatearRun(this.estudiantePersonal.run);
+      }
     }
   }
 
+  // Método para formatear RUN agregando puntos y guión
+  formatearRun(run: string): string {
+    if (!run) return '';
+
+    // Remover caracteres no válidos
+    const runLimpio = run.replace(/[^0-9K]/g, '');
+
+    if (runLimpio.length < 2) return runLimpio;
+
+    // Separar números y dígito verificador
+    const numeros = runLimpio.slice(0, -1);
+    const dv = runLimpio.slice(-1);
+
+    // Formatear números con puntos
+    let numerosFormateados = '';
+    for (let i = 0; i < numeros.length; i++) {
+      if (i > 0 && (numeros.length - i) % 3 === 0) {
+        numerosFormateados += '.';
+      }
+      numerosFormateados += numeros[i];
+    }
+
+    return numerosFormateados + '-' + dv;
+  }
+
+  // Método para limpiar el RUN (remover puntos y guión)
+  limpiarRun(run: string): string {
+    return run.replace(/[^0-9K]/g, '');
+  }
+
   validarRun(): void {
-    if (this.estudiantePersonal.run) {
-      this.runValido = this.estudianteService.validarRun(this.estudiantePersonal.run);
+    if (this.runFormateado) {
+      // Limpiar el RUN para validación
+      const runLimpio = this.limpiarRun(this.runFormateado);
+      this.estudiantePersonal.run = runLimpio;
+
+      this.runValido = this.estudianteService.validarRun(runLimpio);
 
       if (!this.runValido) {
         this.errores = this.errores.filter(error => !error.includes('RUN'));
@@ -168,13 +207,19 @@ export class RegistroEstudianteComponent implements OnInit {
     // Remover caracteres no válidos
     value = value.replace(/[^0-9K]/g, '');
 
-    // Limitar a 9 caracteres
+    // Limitar a 9 caracteres (sin formato)
     if (value.length > 9) {
       value = value.substring(0, 9);
     }
 
+    // Actualizar el RUN limpio en el modelo
     this.estudiantePersonal.run = value;
-    event.target.value = value;
+
+    // Formatear para mostrar
+    this.runFormateado = this.formatearRun(value);
+
+    // Actualizar el input con el valor formateado
+    event.target.value = this.runFormateado;
   }
 
   // Método para formatear teléfonos

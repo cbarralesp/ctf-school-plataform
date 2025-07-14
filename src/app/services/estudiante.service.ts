@@ -172,9 +172,10 @@ export class EstudianteService {
     return this.http.get<EstudianteCompleto[]>(`${this.API_URL}/completo/todos`);
   }
 
-  eliminarEstudiante(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.API_URL}/${id}`);
-  }
+ eliminarEstudiante(id: number): Observable<void> {
+  return this.http.delete<void>(`${this.API_URL}/completo/${id}`);
+}
+
 
   // Métodos de validación
   validarRun(run: string): boolean {
